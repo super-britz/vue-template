@@ -3,7 +3,10 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center">
-    <h1 class="text-3xl font-bold">Welcome</h1>
+  <div>
+    <h1 class="mb-4 text-2xl font-bold">首页</h1>
+    <ElCard>
+      <p>欢迎使用 Vue Template</p>
+    </ElCard>
   </div>
 </template>

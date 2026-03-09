@@ -1,9 +1,23 @@
 <script setup lang="ts">
-// 默认布局：后续添加侧边栏、顶栏等
+import { ref } from 'vue'
+import AppSidebar from './AppSidebar.vue'
+import AppHeader from './AppHeader.vue'
+
+const isCollapsed = ref(false)
+
+function toggleSidebar() {
+  isCollapsed.value = !isCollapsed.value
+}
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <RouterView />
-  </div>
+  <ElContainer class="min-h-screen">
+    <AppSidebar :collapsed="isCollapsed" />
+    <ElContainer>
+      <AppHeader :collapsed="isCollapsed" @toggle="toggleSidebar" />
+      <ElMain class="bg-gray-50">
+        <RouterView />
+      </ElMain>
+    </ElContainer>
+  </ElContainer>
 </template>
