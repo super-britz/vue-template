@@ -28,6 +28,25 @@ export default defineConfig({
   ],
   server: {
     port: 18000,
+    proxy: {
+      '/login/': {
+        target: 'http://api-console-localtest.ninebot.com/',
+        changeOrigin: true,
+        headers: {
+          Host: 'localhost:18000',
+          Origin: 'https://iot-test.ninebot.com',
+        },
+      },
+      '/service/': {
+        target: 'http://api-console-localtest.ninebot.com/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/service/, ''),
+        headers: {
+          Host: 'localhost:18000',
+          Origin: 'https://iot-test.ninebot.com',
+        },
+      },
+    },
   },
   resolve: {
     alias: {
