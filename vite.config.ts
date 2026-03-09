@@ -9,6 +9,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
+import { compression } from 'vite-plugin-compression2'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -27,7 +28,20 @@ export default defineConfig({
       dts: 'src/components.d.ts',
     }),
     mockDevServerPlugin(),
+    compression({ algorithms: ['gzip', 'brotliCompress'] }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          'element-plus': ['element-plus', '@element-plus/icons-vue'],
+          'axios': ['axios'],
+        },
+      },
+    },
+  },
   server: {
     port: 18000,
     proxy: {
