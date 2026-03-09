@@ -35,6 +35,17 @@ export const useUserStore = defineStore('user', () => {
     toLogout()
   }
 
+  /** 开发环境 mock 用户数据 */
+  function setMockUser() {
+    userInfo.value = {
+      id: 0,
+      username: 'dev',
+      nickname: '开发者',
+      roles: ['admin'],
+      permissions: ['*'],
+    }
+  }
+
   /** 检查是否包含指定角色 */
   function hasRole(role: string) {
     return userInfo.value?.roles.includes(role) ?? false
@@ -45,5 +56,5 @@ export const useUserStore = defineStore('user', () => {
     return userInfo.value?.permissions.includes(permission) ?? false
   }
 
-  return { userInfo, isLoggedIn, fetchUserInfo, login, logout, hasRole, hasPermission }
+  return { userInfo, isLoggedIn, fetchUserInfo, login, logout, hasRole, hasPermission, setMockUser }
 })

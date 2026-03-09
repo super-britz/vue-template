@@ -17,9 +17,15 @@ export function setupRouterGuard(router: Router) {
       try {
         await userStore.fetchUserInfo()
       } catch {
-        // 获取失败，跳转 OAuth2 登录
-        toLogin()
-        return false
+        if (import.meta.env.DEV) {
+          // 开发环境：获取失败时使用 mock 数据，方便本地调试
+          console.warn('[Guard] 获取用户信息失败，使用 mock 数据')
+          userStore.setMockUser()
+        } else {
+          // 生产环境：跳转 OAuth2 登录
+          toLogin()
+          return false
+        }
       }
     }
 
