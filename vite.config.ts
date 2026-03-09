@@ -11,6 +11,10 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
 import { compression } from 'vite-plugin-compression2'
 
+// 禁止自动注入 Element Plus 的样式导入（CSS/SCSS）。
+// 注意：关闭后组件将不再自带样式，需要你自己提供替代样式/主题。
+const elementPlusResolver = ElementPlusResolver({ importStyle: false })
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -20,11 +24,11 @@ export default defineConfig({
     vueDevTools(),
     AutoImport({
       imports: ['vue', 'vue-router', 'pinia'],
-      resolvers: [ElementPlusResolver()],
+      resolvers: [elementPlusResolver],
       dts: 'src/auto-imports.d.ts',
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [elementPlusResolver],
       dts: 'src/components.d.ts',
     }),
     mockDevServerPlugin(),
@@ -37,7 +41,7 @@ export default defineConfig({
         manualChunks: {
           'vue-vendor': ['vue', 'vue-router', 'pinia'],
           'element-plus': ['element-plus', '@element-plus/icons-vue'],
-          'axios': ['axios'],
+          axios: ['axios'],
         },
       },
     },
@@ -66,7 +70,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 })
