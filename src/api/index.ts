@@ -1,2 +1,1 @@
-// HTTP 客户端将在下一步配置
-export {}
+export { default as http, request } from './request'
