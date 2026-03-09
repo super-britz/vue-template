@@ -12,11 +12,14 @@ defineEmits<{
 
 const userStore = useUserStore()
 
+const isDev = import.meta.env.DEV
 const displayName = computed(() => userStore.userInfo?.nickname ?? 'Admin')
 
 function handleCommand(command: string) {
   if (command === 'logout') {
     userStore.logout()
+  } else if (command === 'oauth-login') {
+    userStore.login()
   }
 }
 </script>
@@ -46,6 +49,7 @@ function handleCommand(command: string) {
       <template #dropdown>
         <ElDropdownMenu>
           <ElDropdownItem command="profile">个人中心</ElDropdownItem>
+          <ElDropdownItem v-if="isDev" command="oauth-login">OAuth2 登录</ElDropdownItem>
           <ElDropdownItem command="logout" divided>退出登录</ElDropdownItem>
         </ElDropdownMenu>
       </template>
