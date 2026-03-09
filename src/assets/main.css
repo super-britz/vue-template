@@ -1,2 +1,22 @@
 @import 'tailwindcss';
 @import 'element-plus/theme-chalk/dark/css-vars.css';
+
+/* 防止 Tailwind preflight 重置 Element Plus 的 button/input 等样式 */
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    color: inherit;
+    font: inherit;
+  }
+}
+
+/* 全局布局 */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
