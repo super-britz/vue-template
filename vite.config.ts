@@ -26,6 +26,9 @@ export default defineConfig({
       dts: 'src/components.d.ts',
     }),
   ],
+  server: {
+    port: 18000,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
