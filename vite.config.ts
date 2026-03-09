@@ -8,6 +8,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -25,6 +26,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
       dts: 'src/components.d.ts',
     }),
+    mockDevServerPlugin(),
   ],
   server: {
     port: 18000,
