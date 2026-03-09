@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
 import { HomeFilled, Setting } from '@element-plus/icons-vue'
 
 defineProps<{
