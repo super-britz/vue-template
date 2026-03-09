@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Fold, Expand, UserFilled } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
 
 defineProps<{
   collapsed: boolean
@@ -8,6 +9,16 @@ defineProps<{
 defineEmits<{
   toggle: []
 }>()
+
+const userStore = useUserStore()
+
+const displayName = computed(() => userStore.userInfo?.nickname ?? 'Admin')
+
+function handleCommand(command: string) {
+  if (command === 'logout') {
+    userStore.logout()
+  }
+}
 </script>
 
 <template>
@@ -27,15 +38,15 @@ defineEmits<{
     </div>
 
     <!-- 右侧：用户信息 -->
-    <ElDropdown trigger="click">
+    <ElDropdown trigger="click" @command="handleCommand">
       <div class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-gray-100">
         <ElAvatar :size="28" :icon="UserFilled" />
-        <span class="text-sm text-gray-700">Admin</span>
+        <span class="text-sm text-gray-700">{{ displayName }}</span>
       </div>
       <template #dropdown>
         <ElDropdownMenu>
-          <ElDropdownItem>个人中心</ElDropdownItem>
-          <ElDropdownItem divided>退出登录</ElDropdownItem>
+          <ElDropdownItem command="profile">个人中心</ElDropdownItem>
+          <ElDropdownItem command="logout" divided>退出登录</ElDropdownItem>
         </ElDropdownMenu>
       </template>
     </ElDropdown>

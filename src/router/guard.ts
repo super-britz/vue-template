@@ -1,0 +1,35 @@
+import type { Router } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { toLogin } from '@/api/auth'
+
+/** 白名单路由（无需登录） */
+const WHITE_LIST = ['/403']
+
+export function setupRouterGuard(router: Router) {
+  router.beforeEach(async (to) => {
+    const userStore = useUserStore()
+
+    // 白名单直接放行
+    if (WHITE_LIST.includes(to.path)) return true
+
+    // 未登录：尝试获取用户信息
+    if (!userStore.isLoggedIn) {
+      try {
+        await userStore.fetchUserInfo()
+      } catch {
+        // 获取失败，跳转 OAuth2 登录
+        toLogin()
+        return false
+      }
+    }
+
+    // 路由级权限校验（meta.roles）
+    const requiredRoles = to.meta.roles as string[] | undefined
+    if (requiredRoles?.length) {
+      const hasAccess = requiredRoles.some((role) => userStore.hasRole(role))
+      if (!hasAccess) return '/403'
+    }
+
+    return true
+  })
+}
