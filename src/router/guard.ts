@@ -29,11 +29,10 @@ export function setupRouterGuard(router: Router) {
       }
     }
 
-    // 路由级权限校验（meta.roles）
-    const requiredRoles = to.meta.roles as string[] | undefined
-    if (requiredRoles?.length) {
-      const hasAccess = requiredRoles.some((role) => userStore.hasRole(role))
-      if (!hasAccess) return '/403'
+    // 路由级权限校验（meta.authorities）
+    const requiredAuth = to.meta.authorities as string[] | undefined
+    if (requiredAuth?.length) {
+      if (!userStore.hasAnyPermission(requiredAuth)) return '/403'
     }
 
     return true

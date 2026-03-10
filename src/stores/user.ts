@@ -2,12 +2,18 @@ import { request } from '@/api'
 import { toLogin, toLogout } from '@/api/auth'
 
 export interface UserInfo {
-  id: number
+  uuid: string
   username: string
   nickname: string
-  avatar?: string
-  roles: string[]
-  permissions: string[]
+  position: string
+  phone: string
+  email: string
+  avatar: string
+  loginType: number
+  lastLogin: string
+  authorities: string[]
+  labels: string[]
+  openApis: string[]
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -38,23 +44,45 @@ export const useUserStore = defineStore('user', () => {
   /** 开发环境 mock 用户数据 */
   function setMockUser() {
     userInfo.value = {
-      id: 0,
+      uuid: '0',
       username: 'dev',
       nickname: '开发者',
-      roles: ['admin'],
-      permissions: ['*'],
+      position: '开发',
+      phone: '',
+      email: '',
+      avatar: '',
+      loginType: 0,
+      lastLogin: '',
+      authorities: ['*'],
+      labels: [],
+      openApis: [],
     }
   }
 
-  /** 检查是否包含指定角色 */
-  function hasRole(role: string) {
-    return userInfo.value?.roles.includes(role) ?? false
-  }
-
-  /** 检查是否包含指定权限 */
+  /**
+   * 检查是否拥有指定权限
+   * 支持通配符 '*' 表示拥有所有权限
+   */
   function hasPermission(permission: string) {
-    return userInfo.value?.permissions.includes(permission) ?? false
+    const authorities = userInfo.value?.authorities ?? []
+    return authorities.includes('*') || authorities.includes(permission)
   }
 
-  return { userInfo, isLoggedIn, fetchUserInfo, login, logout, hasRole, hasPermission, setMockUser }
+  /**
+   * 检查是否拥有任一权限
+   */
+  function hasAnyPermission(permissions: string[]) {
+    return permissions.some((p) => hasPermission(p))
+  }
+
+  return {
+    userInfo,
+    isLoggedIn,
+    fetchUserInfo,
+    login,
+    logout,
+    hasPermission,
+    hasAnyPermission,
+    setMockUser,
+  }
 })

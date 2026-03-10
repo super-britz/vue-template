@@ -27,6 +27,11 @@ instance.interceptors.response.use(
  */
 export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   const { data } = await instance.request<ApiResponse<T>>(config)
+
+  if (data.resultCode !== '1000') {
+    throw new Error(data.resultDesc || '请求失败')
+  }
+
   return data.data
 }
 

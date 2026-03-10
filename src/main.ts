@@ -7,6 +7,7 @@ import App from './App.vue'
 import './assets/main.css'
 import router from './router'
 import { setupRouterGuard } from './router/guard'
+import { vAuth } from './directives/auth'
 
 const app = createApp(App)
 
@@ -36,6 +37,7 @@ app.use(TitanComponentsLibrary, {
     },
   },
 })
+app.directive('auth', vAuth)
 setupRouterGuard(router)
 
 app.mount('#app')

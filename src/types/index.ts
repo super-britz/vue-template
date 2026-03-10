@@ -1,8 +1,8 @@
 /** 通用 API 响应结构 */
 export interface ApiResponse<T = unknown> {
-  code: number
+  resultCode: string
+  resultDesc: string
   data: T
-  message: string
 }
 
 /** 分页请求参数 */

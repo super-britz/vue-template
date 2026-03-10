@@ -1,11 +1,48 @@
 <script setup lang="ts">
 import { HomeFilled, Setting } from '@element-plus/icons-vue'
+import type { RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 defineProps<{
   collapsed: boolean
 }>()
 
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
+
+/** 图标映射 */
+const iconMap: Record<string, typeof HomeFilled> = {
+  HomeFilled,
+  Setting,
+}
+
+/** 过滤有权限的菜单 */
+function filterMenus(routes: readonly RouteRecordRaw[]): RouteRecordRaw[] {
+  return routes.filter((route) => {
+    if (route.meta?.hidden) return false
+    const auth = route.meta?.authorities
+    if (auth?.length && !userStore.hasAnyPermission(auth)) return false
+    return true
+  })
+}
+
+/** 获取布局路由下的菜单列表 */
+const menus = computed(() => {
+  const layoutRoute = router.options.routes.find((r) => r.path === '/')
+  return filterMenus(layoutRoute?.children ?? [])
+})
+
+/** 过滤子菜单 */
+function getChildren(route: RouteRecordRaw): RouteRecordRaw[] {
+  return filterMenus(route.children ?? [])
+}
+
+/** 拼接完整路径 */
+function resolvePath(parent: string, child: string) {
+  if (child.startsWith('/')) return child
+  return `${parent === '/' ? '' : parent}/${child}`
+}
 </script>
 
 <template>
@@ -28,18 +65,32 @@ const route = useRoute()
         router
         class="!border-r-0"
       >
-        <ElMenuItem index="/">
-          <ElIcon><HomeFilled /></ElIcon>
-          <template #title>首页</template>
-        </ElMenuItem>
-        <ElSubMenu index="/system">
-          <template #title>
-            <ElIcon><Setting /></ElIcon>
-            <span>系统管理</span>
-          </template>
-          <ElMenuItem index="/system/user">用户管理</ElMenuItem>
-          <ElMenuItem index="/system/role">角色管理</ElMenuItem>
-        </ElSubMenu>
+        <template v-for="menu in menus" :key="menu.path">
+          <!-- 有子菜单 -->
+          <ElSubMenu v-if="getChildren(menu).length" :index="'/' + menu.path">
+            <template #title>
+              <ElIcon v-if="menu.meta?.icon">
+                <component :is="iconMap[menu.meta.icon]" />
+              </ElIcon>
+              <span>{{ menu.meta?.title }}</span>
+            </template>
+            <ElMenuItem
+              v-for="child in getChildren(menu)"
+              :key="child.path"
+              :index="resolvePath('/' + menu.path, child.path)"
+            >
+              {{ child.meta?.title }}
+            </ElMenuItem>
+          </ElSubMenu>
+
+          <!-- 无子菜单 -->
+          <ElMenuItem v-else :index="'/' + menu.path">
+            <ElIcon v-if="menu.meta?.icon">
+              <component :is="iconMap[menu.meta.icon]" />
+            </ElIcon>
+            <template #title>{{ menu.meta?.title }}</template>
+          </ElMenuItem>
+        </template>
       </ElMenu>
     </ElScrollbar>
   </ElAside>
