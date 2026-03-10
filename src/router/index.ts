@@ -13,7 +13,7 @@ const router = createRouter({
         {
           path: '',
           name: 'Home',
-          component: () => import('@/views/HomeView.vue'),
+          component: () => import('@/components/UnderDevelopment.vue'),
           meta: { title: '首页', icon: 'HomeFilled' },
         },
         {
@@ -26,13 +26,13 @@ const router = createRouter({
             {
               path: 'user',
               name: 'SystemUser',
-              component: () => import('@/views/HomeView.vue'),
+              component: () => import('@/components/UnderDevelopment.vue'),
               meta: { title: '用户管理', authorities: ['supplier:account'] },
             },
             {
               path: 'role',
               name: 'SystemRole',
-              component: () => import('@/views/HomeView.vue'),
+              component: () => import('@/components/UnderDevelopment.vue'),
               meta: { title: '角色管理', authorities: ['supplier:account'] },
             },
           ],
