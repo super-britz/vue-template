@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, RouterView } from 'vue-router'
+import { h } from 'vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import './types'
 
@@ -18,6 +19,8 @@ const router = createRouter({
         {
           path: 'system',
           name: 'System',
+          redirect: '/system/user',
+          component: { render: () => h(RouterView) },
           meta: { title: '系统管理', icon: 'Setting', authorities: ['supplier:info'] },
           children: [
             {
