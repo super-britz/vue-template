@@ -10,6 +10,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.30(typescript@5.9.3))
+      '@ninebot/business-icon':
+        specifier: ^1.0.8
+        version: 1.0.8(unplugin-vue-components@31.0.0(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
       '@ninebot/pc-titan-components':
         specifier: 1.2.0
         version: 1.2.0(@ninebot/utils@0.0.9(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1))(element-plus@2.13.2(vue@3.5.30(typescript@5.9.3)))(sortablejs@1.15.7)(vue-router@5.0.3(@vue/compiler-sfc@3.5.30)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
@@ -1256,6 +1259,15 @@ packages:
       {
         integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==,
       }
+
+  '@ninebot/business-icon@1.0.8':
+    resolution:
+      {
+        integrity: sha512-B8onRYmOJ+KzWu4KV7Mny1ukKcMhbhMsKQU4rcQDgzT107lQO45SGv9PdcUetTxf0/dvpR+/DGvm+ABQ/w8Heg==,
+      }
+    peerDependencies:
+      unplugin-vue-components: ^0.27.0
+      vue: ^3.4.29
 
   '@ninebot/pc-titan-components@1.2.0':
     resolution:
@@ -6594,6 +6606,11 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@ninebot/business-icon@1.0.8(unplugin-vue-components@31.0.0(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))':
+    dependencies:
+      unplugin-vue-components: 31.0.0(vue@3.5.30(typescript@5.9.3))
+      vue: 3.5.30(typescript@5.9.3)
 
   '@ninebot/pc-titan-components@1.2.0(@ninebot/utils@0.0.9(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1))(element-plus@2.13.2(vue@3.5.30(typescript@5.9.3)))(sortablejs@1.15.7)(vue-router@5.0.3(@vue/compiler-sfc@3.5.30)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))':
     dependencies:

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@ninebot/business-icon": "^1.0.8",
     "@ninebot/pc-titan-components": "1.2.0",
     "@ninebot/pc-titan-styles-b": "1.3.0-beta.0",
     "@tailwindcss/vite": "^4.2.1",

@@ -11,9 +11,9 @@ function toggleSidebar() {
 
 <template>
   <ElContainer class="h-full">
-    <AppSidebar :collapsed="isCollapsed" />
+    <AppSidebar :collapsed="isCollapsed" @toggle="toggleSidebar" />
     <ElContainer direction="vertical" class="min-w-0">
-      <AppHeader :collapsed="isCollapsed" @toggle="toggleSidebar" />
+      <AppHeader />
       <ElMain class="!overflow-auto bg-gray-100 p-4">
         <RouterView />
       </ElMain>

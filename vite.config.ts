@@ -29,7 +29,15 @@ export default defineConfig({
       dts: 'src/auto-imports.d.ts',
     }),
     Components({
-      resolvers: [elementPlusResolver],
+      resolvers: [
+        elementPlusResolver,
+        (name) => {
+          // 自动按需导入 @ninebot/business-icon 图标组件
+          if (/^Business[A-Z]/.test(name)) {
+            return { from: '@ninebot/business-icon', name }
+          }
+        },
+      ],
       dts: 'src/components.d.ts',
     }),
     mockDevServerPlugin(),

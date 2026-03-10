@@ -7,6 +7,10 @@ defineProps<{
   collapsed: boolean
 }>()
 
+defineEmits<{
+  toggle: []
+}>()
+
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
@@ -93,5 +97,20 @@ function resolvePath(parent: string, child: string) {
         </template>
       </ElMenu>
     </ElScrollbar>
+
+    <!-- 折叠按钮 -->
+    <div
+      class="flex shrink-0 px-4 pt-4 pb-5"
+      :class="collapsed ? 'justify-center' : 'justify-end'"
+      style="height: 56px"
+    >
+      <div
+        class="flex h-8 w-8 cursor-pointer items-center justify-center rounded hover:bg-gray-100"
+        @click="$emit('toggle')"
+      >
+        <BusinessDoubleArrowRight v-if="collapsed" class="h-5 w-5" />
+        <BusinessDoubleArrowLeft v-else class="h-5 w-5" />
+      </div>
+    </div>
   </ElAside>
 </template>
