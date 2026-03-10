@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppSidebar from './AppSidebar.vue'
+import SideNavigation from './SideNavigation.vue'
 import AppHeader from './AppHeader.vue'
 
 const isCollapsed = ref(false)
@@ -10,13 +10,15 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <ElContainer class="h-full">
-    <AppSidebar :collapsed="isCollapsed" @toggle="toggleSidebar" />
-    <ElContainer direction="vertical" class="min-w-0">
-      <AppHeader />
-      <ElMain class="!overflow-auto bg-gray-100 p-4">
-        <RouterView />
-      </ElMain>
+  <ElContainer direction="vertical" class="h-full">
+    <AppHeader />
+    <ElContainer class="min-h-0">
+      <SideNavigation :collapsed="isCollapsed" @toggle="toggleSidebar" />
+      <ElContainer direction="vertical" class="min-w-0">
+        <ElMain class="!overflow-auto bg-gray-100 p-4">
+          <RouterView />
+        </ElMain>
+      </ElContainer>
     </ElContainer>
   </ElContainer>
 </template>
