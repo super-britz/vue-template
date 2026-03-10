@@ -1,73 +1,83 @@
 # vue-template
 
-This template should help get you started developing with Vue 3 in Vite.
+基于 Vue 3 + Vite 的中后台前端项目模板。
 
-## Recommended IDE Setup
+## 技术栈
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **框架**: Vue 3 + TypeScript
+- **构建工具**: Vite
+- **UI 组件库**: Element Plus
+- **CSS 方案**: Tailwind CSS 4
+- **状态管理**: Pinia
+- **路由**: Vue Router
+- **HTTP 请求**: Axios
+- **时间处理**: Day.js
 
-## Recommended Browser Setup
+## 项目结构
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+```
+src/
+├── api/            # 接口请求与认证
+├── assets/         # 静态资源
+├── components/     # 公共组件
+├── directives/     # 自定义指令（权限等）
+├── layouts/        # 布局组件
+├── router/         # 路由配置与导航守卫
+├── stores/         # Pinia 状态管理
+├── types/          # 类型定义
+├── utils/          # 工具函数
+└── views/          # 页面视图
+```
 
-## Type Support for `.vue` Imports in TS
+## 主要功能
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- OAuth2 登录认证
+- 基于 authorities 的菜单与按钮级权限控制
+- 侧边栏 + 顶栏布局
+- Auto Import（Vue API、组件、工具函数自动导入）
+- Mock Dev Server 支持
+- Gzip / Brotli 压缩
 
-## Customize configuration
+## 开发环境要求
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Node.js ^20.19.0 || >=22.12.0
+- pnpm
 
-## Project Setup
+## 快速开始
 
 ```sh
+# 安装依赖
 pnpm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# 启动开发服务器（端口 18000）
 pnpm dev
-```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-pnpm test:unit
-```
-
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
-
-```sh
-# Install browsers for the first run
-npx playwright install
-
-# When testing on CI, must build the project first
+# 类型检查 + 构建
 pnpm build
 
-# Runs the end-to-end tests
-pnpm test:e2e
-# Runs the tests only on Chromium
-pnpm test:e2e --project=chromium
-# Runs the tests of a specific file
-pnpm test:e2e tests/example.spec.ts
-# Runs the tests in debug mode
-pnpm test:e2e --debug
+# 预览构建产物
+pnpm preview
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 代码质量
 
 ```sh
+# Lint（oxlint + eslint）
 pnpm lint
+
+# 格式化
+pnpm format
+```
+
+项目使用 Husky + lint-staged 在提交时自动执行 lint 和格式化，并通过 commitlint 规范提交信息。
+
+## 测试
+
+```sh
+# 单元测试
+pnpm test:unit
+
+# E2E 测试（Playwright）
+npx playwright install   # 首次需安装浏览器
+pnpm test:e2e
 ```
