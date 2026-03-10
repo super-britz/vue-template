@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Fold, Expand, UserFilled } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 
 defineProps<{
@@ -17,7 +18,15 @@ const displayName = computed(() => userStore.userInfo?.nickname ?? 'Admin')
 
 function handleCommand(command: string) {
   if (command === 'logout') {
-    userStore.logout()
+    ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+      .then(() => {
+        userStore.logout()
+      })
+      .catch(() => {})
   } else if (command === 'oauth-login') {
     userStore.login()
   }
