@@ -47,7 +47,6 @@ function handleCommand(command: string) {
         </div>
         <template #dropdown>
           <ElDropdownMenu>
-            <ElDropdownItem command="profile">个人中心</ElDropdownItem>
             <ElDropdownItem v-if="isDev" command="oauth-login">OAuth2 登录</ElDropdownItem>
             <ElDropdownItem command="logout" divided>退出登录</ElDropdownItem>
           </ElDropdownMenu>
