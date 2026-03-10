@@ -58,6 +58,10 @@ export default defineConfig({
   server: {
     port: 18000,
     proxy: {
+      '/api': {
+        target: 'http://localhost:18000',
+        changeOrigin: true,
+      },
       '/login/': {
         target: 'http://api-console-localtest.ninebot.com/',
         changeOrigin: true,
