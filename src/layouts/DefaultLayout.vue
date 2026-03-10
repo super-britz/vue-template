@@ -15,7 +15,7 @@ function toggleSidebar() {
     <ElContainer class="min-h-0">
       <SideNavigation :collapsed="isCollapsed" @toggle="toggleSidebar" />
       <ElContainer direction="vertical" class="min-w-0">
-        <ElMain class="!overflow-auto bg-gray-100 p-4">
+        <ElMain class="!overflow-auto p-4">
           <RouterView />
         </ElMain>
       </ElContainer>
