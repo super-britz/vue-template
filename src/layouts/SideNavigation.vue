@@ -37,27 +37,28 @@ function filterMenus(routes: readonly RouteRecordRaw[]): RouteRecordRaw[] {
   })
 }
 
-/** 获取布局路由下的菜单列表 */
-const menus = computed(() => {
-  const layoutRoute = router.options.routes.find((r) => r.path === '/')
-  return filterMenus(layoutRoute?.children ?? [])
-})
-
-/** 过滤子菜单 */
-function getChildren(menu: RouteRecordRaw): RouteRecordRaw[] {
-  return filterMenus(menu.children ?? [])
-}
-
 /** 拼接完整路径 */
 function resolvePath(parent: string, child: string) {
   if (child.startsWith('/')) return child
   return `${parent === '/' ? '' : parent}/${child}`
 }
 
-/** 获取菜单完整路径 */
-function getMenuPath(menu: RouteRecordRaw) {
-  return '/' + menu.path
-}
+/** 预计算菜单树，避免模板中重复调用 filterMenus */
+const menuTree = computed(() => {
+  const layoutRoute = router.options.routes.find((r) => r.path === '/')
+  return filterMenus(layoutRoute?.children ?? []).map((menu) => {
+    const fullPath = '/' + menu.path
+    return {
+      route: menu,
+      fullPath,
+      icon: getMenuIcon(menu.meta?.icon),
+      children: filterMenus(menu.children ?? []).map((child) => ({
+        route: child,
+        fullPath: resolvePath(fullPath, child.path),
+      })),
+    }
+  })
+})
 
 /** 展开的子菜单集合 */
 const expandedMenus = ref<Set<string>>(new Set())
@@ -66,15 +67,12 @@ const expandedMenus = ref<Set<string>>(new Set())
 watch(
   () => route.path,
   () => {
-    for (const menu of menus.value) {
-      const children = getChildren(menu)
-      if (!children.length) continue
-      const parentPath = getMenuPath(menu)
-      const hasActiveChild = children.some((child) => {
-        const fullPath = resolvePath(parentPath, child.path)
-        return route.path === fullPath || route.path.startsWith(fullPath + '/')
-      })
-      if (hasActiveChild) expandedMenus.value.add(parentPath)
+    for (const item of menuTree.value) {
+      if (!item.children.length) continue
+      const hasActiveChild = item.children.some(
+        (child) => route.path === child.fullPath || route.path.startsWith(child.fullPath + '/'),
+      )
+      if (hasActiveChild) expandedMenus.value.add(item.fullPath)
     }
   },
   { immediate: true },
@@ -103,19 +101,17 @@ function isActiveParent(menuPath: string) {
 }
 
 /** 处理菜单项点击 */
-function handleMenuClick(menu: RouteRecordRaw) {
-  const children = getChildren(menu)
-  const path = getMenuPath(menu)
-  if (children.length) {
-    toggleExpand(path)
+function handleMenuClick(item: (typeof menuTree.value)[number]) {
+  if (item.children.length) {
+    toggleExpand(item.fullPath)
   } else {
-    router.push(path)
+    router.push(item.fullPath)
   }
 }
 
 /** 处理子菜单项点击 */
-function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
-  router.push(resolvePath(getMenuPath(menu), child.path))
+function handleChildClick(childFullPath: string) {
+  router.push(childFullPath)
 }
 </script>
 
@@ -129,26 +125,26 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
       <nav class="flex flex-col py-4">
         <!-- ========== 展开状态 ========== -->
         <div v-show="!collapsed" class="flex flex-col">
-          <template v-for="menu in menus" :key="menu.path">
+          <template v-for="item in menuTree" :key="item.fullPath">
             <!-- 有子菜单的项 -->
-            <template v-if="getChildren(menu).length">
+            <template v-if="item.children.length">
               <div
                 class="flex h-12 cursor-pointer items-center px-2 py-1"
-                @click="handleMenuClick(menu)"
+                @click="handleMenuClick(item)"
               >
                 <div class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-[#f5f7fa]">
                   <div class="flex shrink-0 items-center p-0.5">
-                    <ElIcon v-if="getMenuIcon(menu.meta?.icon)" :size="20">
-                      <component :is="getMenuIcon(menu.meta?.icon)" />
+                    <ElIcon v-if="item.icon" :size="20">
+                      <component :is="item.icon" />
                     </ElIcon>
                   </div>
                   <span class="flex-1 truncate text-sm text-[#303133]">
-                    {{ menu.meta?.title }}
+                    {{ item.route.meta?.title }}
                   </span>
                   <ElIcon
                     :size="14"
                     class="shrink-0 text-[#303133] transition-transform duration-200"
-                    :class="isExpanded(getMenuPath(menu)) ? 'rotate-180' : ''"
+                    :class="isExpanded(item.fullPath) ? 'rotate-180' : ''"
                   >
                     <ArrowDown />
                   </ElIcon>
@@ -156,22 +152,18 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
               </div>
 
               <!-- 子菜单 -->
-              <div v-show="isExpanded(getMenuPath(menu))" class="flex flex-col">
+              <div v-show="isExpanded(item.fullPath)" class="flex flex-col">
                 <div
-                  v-for="child in getChildren(menu)"
-                  :key="child.path"
+                  v-for="child in item.children"
+                  :key="child.fullPath"
                   class="cursor-pointer px-2"
-                  @click="handleChildClick(menu, child)"
+                  @click="handleChildClick(child.fullPath)"
                 >
                   <div
                     class="flex h-12 items-center rounded pl-10 pr-4 hover:bg-[#f5f7fa]"
-                    :class="
-                      isActiveRoute(resolvePath(getMenuPath(menu), child.path))
-                        ? 'text-[#165dff]'
-                        : 'text-[#303133]'
-                    "
+                    :class="isActiveRoute(child.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
                   >
-                    <span class="truncate text-sm">{{ child.meta?.title }}</span>
+                    <span class="truncate text-sm">{{ child.route.meta?.title }}</span>
                   </div>
                 </div>
               </div>
@@ -181,19 +173,19 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
             <div
               v-else
               class="flex h-12 cursor-pointer items-center px-2 py-1"
-              @click="handleMenuClick(menu)"
+              @click="handleMenuClick(item)"
             >
               <div
                 class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-[#f5f7fa]"
-                :class="isActiveRoute(getMenuPath(menu)) ? 'text-[#165dff]' : 'text-[#303133]'"
+                :class="isActiveRoute(item.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
               >
                 <div class="flex shrink-0 items-center p-0.5">
-                  <ElIcon v-if="getMenuIcon(menu.meta?.icon)" :size="20">
-                    <component :is="getMenuIcon(menu.meta?.icon)" />
+                  <ElIcon v-if="item.icon" :size="20">
+                    <component :is="item.icon" />
                   </ElIcon>
                 </div>
                 <span class="flex-1 truncate text-sm">
-                  {{ menu.meta?.title }}
+                  {{ item.route.meta?.title }}
                 </span>
               </div>
             </div>
@@ -202,10 +194,10 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
 
         <!-- ========== 折叠状态 ========== -->
         <div v-show="collapsed" class="flex flex-col">
-          <template v-for="menu in menus" :key="menu.path">
+          <template v-for="item in menuTree" :key="item.fullPath">
             <!-- 有子菜单：hover 弹出浮层 -->
             <ElPopover
-              v-if="getChildren(menu).length"
+              v-if="item.children.length"
               placement="right-start"
               trigger="hover"
               :show-arrow="false"
@@ -217,11 +209,11 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
                 <div class="flex h-12 items-center px-2 py-1">
                   <div
                     class="flex cursor-pointer items-center rounded px-2 hover:bg-[#f5f7fa]"
-                    :class="isActiveParent(getMenuPath(menu)) ? 'text-[#165dff]' : ''"
+                    :class="isActiveParent(item.fullPath) ? 'text-[#165dff]' : ''"
                   >
                     <div class="flex shrink-0 items-center p-0.5">
-                      <ElIcon v-if="getMenuIcon(menu.meta?.icon)" :size="20">
-                        <component :is="getMenuIcon(menu.meta?.icon)" />
+                      <ElIcon v-if="item.icon" :size="20">
+                        <component :is="item.icon" />
                       </ElIcon>
                     </div>
                   </div>
@@ -232,42 +224,38 @@ function handleChildClick(menu: RouteRecordRaw, child: RouteRecordRaw) {
               <div class="flex flex-col py-1">
                 <!-- 分组标题 -->
                 <div class="flex h-12 items-center px-4">
-                  <span class="text-sm text-[#c0c4cc]">{{ menu.meta?.title }}</span>
+                  <span class="text-sm text-[#c0c4cc]">{{ item.route.meta?.title }}</span>
                 </div>
                 <!-- 子菜单项 -->
                 <div
-                  v-for="child in getChildren(menu)"
-                  :key="child.path"
+                  v-for="child in item.children"
+                  :key="child.fullPath"
                   class="cursor-pointer px-2"
-                  @click="handleChildClick(menu, child)"
+                  @click="handleChildClick(child.fullPath)"
                 >
                   <div
                     class="flex h-12 items-center rounded px-2 hover:bg-[#f0f2f5]"
-                    :class="
-                      isActiveRoute(resolvePath(getMenuPath(menu), child.path))
-                        ? 'text-[#165dff]'
-                        : 'text-[#303133]'
-                    "
+                    :class="isActiveRoute(child.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
                   >
-                    <span class="truncate text-sm">{{ child.meta?.title }}</span>
+                    <span class="truncate text-sm">{{ child.route.meta?.title }}</span>
                   </div>
                 </div>
               </div>
             </ElPopover>
 
             <!-- 无子菜单：hover 提示文字 -->
-            <ElTooltip v-else :content="menu.meta?.title" placement="right">
+            <ElTooltip v-else :content="item.route.meta?.title" placement="right">
               <div
                 class="flex h-12 cursor-pointer items-center px-2 py-1"
-                @click="handleMenuClick(menu)"
+                @click="handleMenuClick(item)"
               >
                 <div
                   class="flex items-center rounded px-2 hover:bg-[#f5f7fa]"
-                  :class="isActiveRoute(getMenuPath(menu)) ? 'text-[#165dff]' : ''"
+                  :class="isActiveRoute(item.fullPath) ? 'text-[#165dff]' : ''"
                 >
                   <div class="flex shrink-0 items-center p-0.5">
-                    <ElIcon v-if="getMenuIcon(menu.meta?.icon)" :size="20">
-                      <component :is="getMenuIcon(menu.meta?.icon)" />
+                    <ElIcon v-if="item.icon" :size="20">
+                      <component :is="item.icon" />
                     </ElIcon>
                   </div>
                 </div>
