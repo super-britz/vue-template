@@ -11,6 +11,9 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
 import { compression } from 'vite-plugin-compression2'
 
+// MOCK=false 时关闭 mock 插件，直连真实后端
+const enableMock = process.env.MOCK !== 'false'
+
 // 禁止自动注入 Element Plus 的样式导入（CSS/SCSS）。
 // 注意：关闭后组件将不再自带样式，需要你自己提供替代样式/主题。
 const elementPlusResolver = ElementPlusResolver({ importStyle: false })
@@ -40,7 +43,7 @@ export default defineConfig({
       ],
       dts: 'src/components.d.ts',
     }),
-    mockDevServerPlugin(),
+    enableMock && mockDevServerPlugin(),
     compression({ algorithms: ['gzip', 'brotliCompress'] }),
   ],
   build: {
@@ -58,10 +61,19 @@ export default defineConfig({
   server: {
     port: 18000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:18000',
-        changeOrigin: true,
-      },
+      // mock 模式：/api 代理到自身供 mock 插件拦截
+      // 非 mock 模式：/api 代理到真实后端
+      '/api': enableMock
+        ? { target: 'http://localhost:18000', changeOrigin: true }
+        : {
+            target: 'http://api-console-localtest.ninebot.com/',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            headers: {
+              Host: 'localhost:18000',
+              Origin: 'https://iot-test.ninebot.com',
+            },
+          },
       '/login/': {
         target: 'http://api-console-localtest.ninebot.com/',
         changeOrigin: true,

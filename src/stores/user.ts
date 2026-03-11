@@ -43,6 +43,7 @@ export const useUserStore = defineStore('user', () => {
 
   /** 开发环境 mock 用户数据 */
   function setMockUser() {
+    if (!import.meta.env.DEV) return
     userInfo.value = {
       uuid: '0',
       username: 'dev',
