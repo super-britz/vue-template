@@ -22,9 +22,9 @@ export function setupRouterGuard(router: Router) {
           console.warn('[Guard] 获取用户信息失败，使用 mock 数据')
           userStore.setMockUser()
         } else {
-          // 生产环境：跳转 OAuth2 登录
+          // 生产环境：跳转 OAuth2 登录，挂起导航避免页面闪烁
           toLogin()
-          return false
+          return new Promise(() => {})
         }
       }
     }
