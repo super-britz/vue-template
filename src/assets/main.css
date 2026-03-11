@@ -1,6 +1,17 @@
 @import 'tailwindcss';
 @import 'element-plus/theme-chalk/dark/css-vars.css';
 
+@theme {
+  --color-primary: #165dff;
+  --color-regular: #303133;
+  --color-secondary: #909399;
+  --color-placeholder: #c0c4cc;
+  --color-border: #dcdfe6;
+  --color-border-light: #ebeef5;
+  --color-fill: #f0f2f5;
+  --color-fill-light: #f5f7fa;
+}
+
 /* 防止 Tailwind preflight 重置 Element Plus 的 button/input 等样式 */
 @layer base {
   button,

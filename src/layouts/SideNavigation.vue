@@ -117,7 +117,7 @@ function handleChildClick(childFullPath: string) {
 
 <template>
   <aside
-    class="flex h-full shrink-0 flex-col overflow-hidden border-r border-[#dcdfe6] bg-white transition-[width] duration-300"
+    class="flex h-full shrink-0 flex-col overflow-hidden border-r border-border bg-white transition-[width] duration-300"
     :style="{ width: collapsed ? '56px' : '200px' }"
   >
     <!-- 菜单区域 -->
@@ -132,18 +132,18 @@ function handleChildClick(childFullPath: string) {
                 class="flex h-12 cursor-pointer items-center px-2 py-1"
                 @click="handleMenuClick(item)"
               >
-                <div class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-[#f5f7fa]">
+                <div class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-fill-light">
                   <div class="flex shrink-0 items-center p-0.5">
                     <ElIcon v-if="item.icon" :size="20">
                       <component :is="item.icon" />
                     </ElIcon>
                   </div>
-                  <span class="flex-1 truncate text-sm text-[#303133]">
+                  <span class="flex-1 truncate text-sm text-regular">
                     {{ item.route.meta?.title }}
                   </span>
                   <ElIcon
                     :size="14"
-                    class="shrink-0 text-[#303133] transition-transform duration-200"
+                    class="shrink-0 text-regular transition-transform duration-200"
                     :class="isExpanded(item.fullPath) ? 'rotate-180' : ''"
                   >
                     <ArrowDown />
@@ -160,8 +160,8 @@ function handleChildClick(childFullPath: string) {
                   @click="handleChildClick(child.fullPath)"
                 >
                   <div
-                    class="flex h-12 items-center rounded pl-10 pr-4 hover:bg-[#f5f7fa]"
-                    :class="isActiveRoute(child.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
+                    class="flex h-12 items-center rounded pl-10 pr-4 hover:bg-fill-light"
+                    :class="isActiveRoute(child.fullPath) ? 'text-primary' : 'text-regular'"
                   >
                     <span class="truncate text-sm">{{ child.route.meta?.title }}</span>
                   </div>
@@ -176,8 +176,8 @@ function handleChildClick(childFullPath: string) {
               @click="handleMenuClick(item)"
             >
               <div
-                class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-[#f5f7fa]"
-                :class="isActiveRoute(item.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
+                class="flex h-12 flex-1 items-center gap-2 rounded px-2 hover:bg-fill-light"
+                :class="isActiveRoute(item.fullPath) ? 'text-primary' : 'text-regular'"
               >
                 <div class="flex shrink-0 items-center p-0.5">
                   <ElIcon v-if="item.icon" :size="20">
@@ -208,8 +208,8 @@ function handleChildClick(childFullPath: string) {
               <template #reference>
                 <div class="flex h-12 items-center px-2 py-1">
                   <div
-                    class="flex cursor-pointer items-center rounded px-2 hover:bg-[#f5f7fa]"
-                    :class="isActiveParent(item.fullPath) ? 'text-[#165dff]' : ''"
+                    class="flex cursor-pointer items-center rounded px-2 hover:bg-fill-light"
+                    :class="isActiveParent(item.fullPath) ? 'text-primary' : ''"
                   >
                     <div class="flex shrink-0 items-center p-0.5">
                       <ElIcon v-if="item.icon" :size="20">
@@ -224,7 +224,7 @@ function handleChildClick(childFullPath: string) {
               <div class="flex flex-col py-1">
                 <!-- 分组标题 -->
                 <div class="flex h-12 items-center px-4">
-                  <span class="text-sm text-[#c0c4cc]">{{ item.route.meta?.title }}</span>
+                  <span class="text-sm text-placeholder">{{ item.route.meta?.title }}</span>
                 </div>
                 <!-- 子菜单项 -->
                 <div
@@ -234,8 +234,8 @@ function handleChildClick(childFullPath: string) {
                   @click="handleChildClick(child.fullPath)"
                 >
                   <div
-                    class="flex h-12 items-center rounded px-2 hover:bg-[#f0f2f5]"
-                    :class="isActiveRoute(child.fullPath) ? 'text-[#165dff]' : 'text-[#303133]'"
+                    class="flex h-12 items-center rounded px-2 hover:bg-fill"
+                    :class="isActiveRoute(child.fullPath) ? 'text-primary' : 'text-regular'"
                   >
                     <span class="truncate text-sm">{{ child.route.meta?.title }}</span>
                   </div>
@@ -250,8 +250,8 @@ function handleChildClick(childFullPath: string) {
                 @click="handleMenuClick(item)"
               >
                 <div
-                  class="flex items-center rounded px-2 hover:bg-[#f5f7fa]"
-                  :class="isActiveRoute(item.fullPath) ? 'text-[#165dff]' : ''"
+                  class="flex items-center rounded px-2 hover:bg-fill-light"
+                  :class="isActiveRoute(item.fullPath) ? 'text-primary' : ''"
                 >
                   <div class="flex shrink-0 items-center p-0.5">
                     <ElIcon v-if="item.icon" :size="20">
@@ -271,7 +271,7 @@ function handleChildClick(childFullPath: string) {
       <!-- 折叠/展开按钮 -->
       <div class="flex w-full py-1" :class="collapsed ? 'justify-center' : 'justify-end pr-4'">
         <div
-          class="flex size-8 cursor-pointer items-center justify-center rounded hover:bg-[#f5f7fa]"
+          class="flex size-8 cursor-pointer items-center justify-center rounded hover:bg-fill-light"
           @click="$emit('toggle')"
         >
           <BusinessDoubleArrowRight v-if="collapsed" class="h-5 w-5" />
@@ -286,7 +286,7 @@ function handleChildClick(childFullPath: string) {
 /* 折叠状态下弹出菜单样式（teleport 到 body，需要全局样式） */
 .side-nav-popover.el-popover.el-popper {
   padding: 0 !important;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
 }

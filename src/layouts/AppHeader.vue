@@ -27,13 +27,13 @@ function handleCommand(command: string) {
 
 <template>
   <ElHeader
-    class="flex h-[52px] shrink-0 items-center border-b border-[#ebeef5] bg-white px-0"
+    class="flex h-[52px] shrink-0 items-center border-b border-border-light bg-white px-0"
     height="52px"
   >
     <div class="flex h-full w-[200px] shrink-0 items-center px-3">
       <div class="flex w-full items-center gap-[18px]">
         <BusinessNinebotLogoCircle class="shrink-0 text-[32px]" />
-        <span class="truncate text-[16px] font-semibold tracking-[0.01em] text-[#303133]">
+        <span class="truncate text-[16px] font-semibold tracking-[0.01em] text-regular">
           {{ projectName }}
         </span>
       </div>

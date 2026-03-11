@@ -28,11 +28,11 @@ defineProps<{
         </svg>
       </div>
 
-      <h1 class="relative text-2xl font-semibold text-[#303133]">
+      <h1 class="relative text-2xl font-semibold text-regular">
         {{ title || $route.meta.title || '当前页面' }}
       </h1>
-      <p class="mt-3 text-sm text-[#909399]">该功能正在开发中，敬请期待</p>
-      <div class="mx-auto mt-7 flex max-w-xs justify-center gap-6 text-xs text-[#909399]">
+      <p class="mt-3 text-sm text-secondary">该功能正在开发中，敬请期待</p>
+      <div class="mx-auto mt-7 flex max-w-xs justify-center gap-6 text-xs text-secondary">
         <div class="flex items-center gap-1.5">
           <span class="h-2 w-2 rounded-full bg-emerald-400" />
           <span>设计完成</span>
